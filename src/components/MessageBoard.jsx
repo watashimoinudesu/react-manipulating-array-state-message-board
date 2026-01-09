@@ -1,58 +1,72 @@
 import { useState } from "react";
+import MessageItem from "./MessageItem";
+
+const INITIAL_MESSAGES = ["Hello all ! This is first message."];
 
 function MessageBoard() {
-  const [messages, setMessages] = useState([
-    "Hello all ! This is first message.",
-  ]);
-  const [inputMessage,setInputMessage]=useState('');
+  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const [inputMessage, setInputMessage] = useState("");
 
-  function addText(e){
-    setInputMessage(e.target.value);
+  function handleInputChange(event) {
+    setInputMessage(event.target.value);
   }
 
-  function addMessage(){
-    if(inputMessage.length===0)return;
-    setMessages([...messages,inputMessage]);
-    setInputMessage('');
+  function handleAddMessage(event) {
+    event.preventDefault();
+
+    const trimmedMessage = inputMessage.trim();
+    if (!trimmedMessage) return;
+
+    setMessages((prevMessages) => [...prevMessages, trimmedMessage]);
+    setInputMessage("");
   }
 
-  function deleteMessage(index) {
-    const newMessage = [...messages];
-    newMessage.splice(index, 1);
-    setMessages(newMessage);
+  function handleDeleteMessage(indexToRemove) {
+    setMessages((prevMessages) =>
+      prevMessages.filter((_, index) => index !== indexToRemove)
+    );
   }
+
   return (
-    <div className="app-wrapper">
-      <h1 class="app-title">Message board</h1>
-      <div class="message-input-container">
-        <label>
-          <input
-            id="message-text"
-            name="message-text"
-            type="text"
-            placeholder="Enter message here"
-            value={inputMessage}
-            onChange={addText}
-          />
-        </label>
-        <button className="submit-message-button" onClick={addMessage}>Submit</button>
-      </div>
+    <section className="app-wrapper">
+      <header>
+        <h1 className="app-title">Message board</h1>
+      </header>
+
+      <section className="message-input-container">
+        <form onSubmit={handleAddMessage}>
+          <label htmlFor="message-text">
+            Message
+            <input
+              id="message-text"
+              name="message-text"
+              type="text"
+              placeholder="Enter message here"
+              value={inputMessage}
+              onChange={handleInputChange}
+            />
+          </label>
+          <button className="submit-message-button" type="submit">
+            Submit
+          </button>
+        </form>
+      </section>
+
       {messages.length > 0 && (
-        <div className="board">
-          {messages.map((message, index) => (
-            <div className="message">
-              <h1 key={index}>{message}</h1>
-              <button
-                className="delete-button"
-                onClick={() => deleteMessage(index)}
-              >
-                x
-              </button>
-            </div>
-          ))}
-        </div>
+        <section className="board" aria-label="Message board">
+          <ul>
+            {messages.map((message, index) => (
+              <li key={index}>
+                <MessageItem
+                  message={message}
+                  onDelete={() => handleDeleteMessage(index)}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
-    </div>
+    </section>
   );
 }
 
