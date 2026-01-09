@@ -1,7 +1,13 @@
 import { useState } from "react";
 import MessageItem from "./MessageItem";
 
-const INITIAL_MESSAGES = ["Hello all ! This is first message."];
+const INITIAL_MESSAGES = [
+  {
+    id: 1,
+    text: "Hello all ! This is first message.",
+    createdAt: new Date().toISOString(),
+  },
+];
 
 function MessageBoard() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
@@ -17,13 +23,19 @@ function MessageBoard() {
     const trimmedMessage = inputMessage.trim();
     if (!trimmedMessage) return;
 
-    setMessages((prevMessages) => [...prevMessages, trimmedMessage]);
+    const newMessage = {
+      id: Date.now(),
+      text: trimmedMessage,
+      createdAt: new Date().toISOString(),
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setInputMessage("");
   }
 
-  function handleDeleteMessage(indexToRemove) {
+  function handleDeleteMessage(idToRemove) {
     setMessages((prevMessages) =>
-      prevMessages.filter((_, index) => index !== indexToRemove)
+      prevMessages.filter((message) => message.id !== idToRemove)
     );
   }
 
@@ -55,11 +67,12 @@ function MessageBoard() {
       {messages.length > 0 && (
         <section className="board" aria-label="Message board">
           <ul>
-            {messages.map((message, index) => (
-              <li key={index}>
+            {messages.map((message) => (
+              <li key={message.id}>
                 <MessageItem
-                  message={message}
-                  onDelete={() => handleDeleteMessage(index)}
+                  message={message.text}
+                  timestamp={message.createdAt}
+                  onDelete={() => handleDeleteMessage(message.id)}
                 />
               </li>
             ))}
