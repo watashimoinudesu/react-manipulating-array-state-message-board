@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 function MessageItem({ message, onDelete }) {
   return (
     <article className="message">
@@ -8,6 +10,11 @@ function MessageItem({ message, onDelete }) {
     </article>
   );
 }
+
+MessageItem.propTypes = {
+  message: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default MessageItem;
 
