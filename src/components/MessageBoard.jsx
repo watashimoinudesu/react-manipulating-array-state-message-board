@@ -48,7 +48,7 @@ function MessageBoard() {
       <section className="message-input-container">
         <form onSubmit={handleAddMessage}>
           <label htmlFor="message-text">
-            Message
+            {/* Message */}
             <input
               id="message-text"
               name="message-text"
